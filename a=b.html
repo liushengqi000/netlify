@@ -27,13 +27,14 @@
             <div>
                 {{status[0]}}<p>
                 <template v-if='status[0]?.startsWith("error")'>
-                input：{{status[1]}}<p>
-                output：{{status[2].length>100?status[2].slice(0,100)+"...":status[2]}}<p>
-                expect：{{status[3]}}<p>
+                输入：{{status[1]}}<p>
+                输出：{{status[2].length>100?status[2].slice(0,100)+"...":status[2]}}<p>
+                预期：{{status[3]}}<p>
                 </template>
             </div>
         </div>
         <div>
+            运行记录：<p>
             <div style="width:800px;border:solid 1px #ff0000;white-space:pre-wrap;word-break:break-word;height:600px;overflow:auto;" v-show='status[0]?.startsWith("error")'>{{status[4]}}</div>
         </div>
     </div>
