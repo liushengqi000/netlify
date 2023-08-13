@@ -40,7 +40,8 @@
         </div>
     </div>
     <script>
-        function d(str,rules,opt={}){
+        function d(str,ruleStr="",opt={}){
+            let rules=ruleStr.split("\n");
             let debugRet=[];
             let {keywords=1,max=5000,debug=0}=opt;
             let clearRules=[];
@@ -448,17 +449,16 @@
                 this.status=[];
             },
             play(){
-                let {test=function*(){},check=_=>_,option={}}=this.tasks[this.no][3],rules=(this.ans[this.no]||"").split('\n');
+                let {test=function*(){},check=_=>_,option={}}=this.tasks[this.no][3],ruleStr=this.ans[this.no];
                 let s=Date.now();
                 let task=test();
                 let re=['通关'];
                 for(let a of task){
-                    let b=d(a,rules,option)[0];
+                    let b=d(a,ruleStr,option)[0];
                     let c=check(a);
                     if(b!=c){
-                        option.debug=1;
                         this.testValue=a;
-                        let r=d(a,rules,option);
+                        let r=d(a,ruleStr,Object.assign({debug:1},option));
                         re=['错误'+(r[2]=="tooSlow" ? " : 超时" : ""),a,b,c,r[2]=="tooSlow"?(r[1].join('\n').slice(0,10000)+"..."):r[1].join('\n')];
                         break;
                     }
@@ -466,10 +466,11 @@
                 this.status=re;
             },
             testRule(){
-                if(this.tasks[this.no][3].vaild(this.testValue)){
-                    let opt=Object.assign({debug:1},this.tasks[this.no][3].option);
-                    let re=d(this.testValue,(this.ans[this.no]||"").split('\n'),opt);
-                    this.status=['测试',this.testValue,re[0],this.tasks[this.no][3].check(this.testValue),re[2]=="tooSlow"?(re[1].join('\n').slice(0,10000)+"..."):re[1].join('\n')];
+                let {check=_=>_,option={},vaild=_=>true}=this.tasks[this.no][3],ruleStr=this.ans[this.no];
+                if(vaild(this.testValue)){
+                    let opt=Object.assign({debug:1},option);
+                    let re=d(this.testValue,ruleStr,opt);
+                    this.status=['测试',this.testValue,re[0],check(this.testValue),re[2]=="tooSlow"?(re[1].join('\n').slice(0,10000)+"..."):re[1].join('\n')];
                 }else{
                     this.status=['测试数据错误']
                 }
