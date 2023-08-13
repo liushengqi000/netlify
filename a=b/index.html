@@ -442,7 +442,7 @@
         },
         computed: {
             anslen() {
-                return (this.ans[this.no]||"").split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.includes('=')).length;
+                return (this.ans[this.no]||"").split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.match(/^[^=]*=[^=]*$/)).length;
             }
         },
         watch: {
