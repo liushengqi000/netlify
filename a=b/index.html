@@ -13,13 +13,14 @@
         <div style="width:800px;flex:none;word-break:break-word;">
             <div>
                 
-                <button style="margin-right:20px" @click="prev" :disabled="no==0">上一题</button>
+                <button style="margin:0px 20px" @click="prev" :disabled="no==0">上一题</button>
                 <select v-model="this.no" style="font-size:17px;width:250px;">
                     <option v-for="(value,index) in this.tasks" :value="index">
                         {{value[0]}}
                     </option>
                 </select>
-                <button style="margin-left:20px" @click="next" :disabled="no+1==tasks.length">下一题</button>
+                <button style="margin:0px 20px" @click="next" :disabled="no+1==tasks.length">下一题</button>
+                <a href="./help.pdf">游戏说明</a>
             </div>
             <div style="white-space:pre-wrap;">{{tasks[no][1]}}<p>目标：{{tasks[no][2]}}</div>
             <div><textarea v-model.lazy="ans[no]" style="width:100%" rows=10 @change="status=[]"></textarea></div>
