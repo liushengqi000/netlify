@@ -412,9 +412,9 @@
             }],
             ["6-2 回文串 2","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入是回文串（正向和反向读起来相同），返回true。\n否则，返回false。\n限制条件: 2 <= 输入长度 <= 7\n在这一关里，你不能使用关键字。",24,
             {
-                test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
+                test:function*(){let len=7,chr=3;for(let l=2;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.split('').reverse().join('') === s).toString(),
-                vaild:s=>s.replace(/[abc]/g,'').length==0,
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length>1,
                 ans:'',
                 option:{keywords:0}
             }],
