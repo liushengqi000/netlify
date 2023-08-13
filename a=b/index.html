@@ -13,13 +13,13 @@
         <div style="width:800px;flex:none;word-break:break-word;">
             <div>
                 
-                <button style="margin:0px 20px" @click="prev" :disabled="no==0">上一题</button>
+                <button style="margin:0px 20px" @click="no-=1" :disabled="no<1">上一题</button>
                 <select v-model="this.no" style="font-size:17px;width:250px;">
                     <option v-for="(value,index) in this.tasks" :value="index">
                         {{value[0]}}
                     </option>
                 </select>
-                <button style="margin:0px 20px" @click="next" :disabled="no+1==tasks.length">下一题</button>
+                <button style="margin:0px 20px" @click="no+=1" :disabled="no+1==tasks.length">下一题</button>
                 <a href="./help.pdf">游戏说明</a>
             </div>
             <div style="white-space:pre-wrap;">{{tasks[no][1]}}<p>目标：{{tasks[no][2]}}</div>
@@ -445,15 +445,12 @@
                 return (this.ans[this.no]||"").split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.includes('=')).length;
             }
         },
+        watch: {
+            no(newNo, oldNo) {
+                this.status=[];
+            }
+        },
         methods:{
-            next(){
-                if(this.no+1<this.tasks.length)this.no+=1;
-                this.status=[];
-            },
-            prev(){
-                if(this.no>0)this.no-=1;
-                this.status=[];
-            },
             play(){
                 let {test=function*(){},check=_=>_,option={}}=this.tasks[this.no][3],ruleStr=this.ans[this.no];
                 let s=Date.now();
