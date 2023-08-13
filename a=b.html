@@ -21,12 +21,13 @@
                 </select>
                 <button style="margin-left:20px" @click="next" :disabled="no+1==tasks.length">下一题</button>
             </div>
-            <div style="display:flex;">{{tasks[no][1]}}</div>
+            <div>{{tasks[no][1]}}<p>目标：{{tasks[no][2]}}</div>
             <div><textarea v-model="ans[no]" style="width:100%" rows=10></textarea></div>
+            <div>测试输入<input style="margin:0px 20px" v-model="testValue"><button @click="testRule">测试</button></div>
             <div><button style="margin-right:20px" @click="play">运行</button><button @click="showMeTheAnswer">看答案</button></div>
             <div>
-                {{status[0]}}<p>
-                <template v-if='status[0]?.startsWith("error")'>
+                {{status[0] && (status[0]=="pass"?(ans[no]?.split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.includes('=')).length>tasks[no][2]?"成功":"完美通关"):(status[0]=="test"?"测试":"错误"))}}<p>
+                <template v-if='status[0]?.startsWith("error")||status[0]=="test"'>
                 输入：{{status[1]}}<p>
                 输出：{{status[2].length>100?status[2].slice(0,100)+"...":status[2]}}<p>
                 预期：{{status[3]}}<p>
@@ -35,7 +36,7 @@
         </div>
         <div>
             运行记录：<p>
-            <div style="width:800px;border:solid 1px #ff0000;white-space:pre-wrap;word-break:break-word;height:600px;overflow:auto;" v-show='status[0]?.startsWith("error")'>{{status[4]}}</div>
+            <div style="width:800px;border:solid 1px #ff0000;white-space:pre-wrap;word-break:break-word;height:600px;overflow:auto;" v-show='status[0]?.startsWith("error")||status[0]=="test"'>{{status[4]}}</div>
         </div>
     </div>
     <script>
@@ -45,9 +46,8 @@
             let clearRules=[];
             for(let i=0;i<rules.length;i++){
                 let rule=rules[i].replace(/#.*$/,"");
-                if(!rule.includes('='))continue;
+                if(!rule.match(/^[^=]*=[^=]*$/))continue;
                 rule=rule.split('=');
-                if(rule.length!=2)continue;
                 rule[0]=rule[0].replace(/[\*\.\?\+\^\$\|\\\/\(\)\[\]\{\}]/g,s=>"\\"+s);
                 if(keywords){
                     if(rule[0].startsWith("\\(start\\)"))rule[0]='^'+rule[0].replace('\\(start\\)','');
@@ -69,7 +69,8 @@
                         re=k+":   ["+rule[2]+"]\n"+str+"";
                     }
                     if(rule[1].startsWith("(return)") && keywords){
-                        return rule[1].replace('(return)','');
+                        str = rule[1].replace('(return)','');
+                        i=clearRules.length;
                     }else if(rule[1].startsWith("(start)") && keywords){
                         str = str.replace(rule[0],"");
                         str = rule[1].replace('(start)','')+str;
@@ -85,7 +86,7 @@
                         debugRet.push(re);
                     }
                     if(rule[2].startsWith("(once)"))clearRules.splice(i,1);
-                    i=-1;
+                    if(i!=clearRules.length)i=-1;
                }
             }
             return [str,debugRet]
@@ -289,7 +290,7 @@
                 check:s=>s+s,
                 ans:'(once)=(start)x\n(once)=(end)y\nqa=(end)a\nqb=(end)b\nqc=(end)c\nxa=axqa\nxb=bxqb\nxc=cxqc\nxy='
             }],
-            ["4-12 To B or not to B","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括b，将每个a替换为b。\n否则，将每个a替换为c。\n限制条件: 1 <= Input length <= 7",9,
+            ["4-12 To B or not to B","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括b，将每个a替换为b。\n否则，将每个a替换为c。\n限制条件: 1 <= Input length <= 7",7,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.includes('b')?s.replace(/a/g,'b'):s.replace(/a/g,'c'),
@@ -307,13 +308,13 @@
                 check:s=>s.split('').map((v,k)=>k==(s.length-1)/2?"":v).join(''),
                 ans:'(once)=(start)dS\n(once)=(end)E\n(end)d=(start)d\ndSaE=\ndSbE=\ndScE=\ndSa=aSd\ndSb=bSd\ndSc=cSd\ndaE=Ead\ndbE=Ebd\ndcE=Ecd\nda=ad\ndb=bd\ndc=cd'
             }],
-            ["4-15 扩张","输入: 一个由a, b和c组成的字符串。\n输出: 重复第x个字母x次。\n限制条件: 1 <= 输入长度 <= 6",13,
+            ["4-15 扩张","输入: 一个由a, b和c组成的字符串。\n输出: 重复第x个字母x次。\n限制条件: 1 <= 输入长度 <= 6",11,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.split('').map((v,k)=>v.repeat(k+1)).join(''),
                 ans:'(once)=(start)X\nXa=aYX\nXb=bYX\nXc=cYX\nXY=yX\nXy=yX\n(end)X=\nY=X\nay=aa\nby=bb\ncy=cc'
             }],
-            ["4-16 合并","输入: 两个由a和b组成的字符串，以\",\"隔开。\n输出: 合并两个字符串。\r\n来自两个字符串的字母在输出串当中交替出现。\n限制条件: 1 <= 输入长度 <= 5\n两个输入串长度相同。",9,
+            ["4-16 合并","输入: 两个由a和b组成的字符串，以\",\"隔开。\n输出: 合并两个字符串。\r\n来自两个字符串的字母在输出串当中交替出现。\n限制条件: 1 <= 输入长度 <= 5\n两个输入串长度相同。",7,
             {
                 test:function*(){let len=5,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++)for(let j=0;j<Math.pow(chr,l);j++){yield i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a')+','+j.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');};},
                 check:s=>(o=s.split(',').map(s=>s.split('')),o[0].map((v,k)=>v+o[1][k]).join('')),
@@ -337,7 +338,7 @@
                 check:s=>s.split('+').map(o=>parseInt(o,2)).reduce((a,b)=>a+b).toString(2),
                 ans:'0a=1\n1a=a0\n+a=+1\n(start)+=\n(start)0=\n1s=0d\n0s=s1\nd=(end)a\n+=s+'
             }],
-            ["5-4 A-B","输入: 两个二进制数，用-隔开。\n输出: 二者之差。\n限制条件: 1 <= 输入数值 <= 31\n第一个数 > 第二个数",8,
+            ["5-4 A-B","输入: 两个二进制数，用-隔开。\n输出: 二者之差。\n限制条件: 1 <= 输入数值 <= 31\n第一个数 > 第二个数",7,
             {
                 test:function*(){for(let a=0;a<50;a++)for(let b=0;b<a;b++)yield a.toString(2)+'-'+b.toString(2);},
                 check:s=>s.split('-').map(o=>parseInt(o,2)).reduce((a,b)=>a-b).toString(2),
@@ -401,24 +402,37 @@
             tasks: tasks,
             no:0,
             ans:{},
-            status:[]
+            status:[],
+            testValue:""
           }
         },
         methods:{
-            next(){if(this.no+1<this.tasks.length)this.no+=1;this.status=[];},
-            prev(){if(this.no>0)this.no-=1;this.status=[];},
+            next(){
+                if(this.no+1<this.tasks.length)this.no+=1;
+                this.status=[];
+            },
+            prev(){
+                if(this.no>0)this.no-=1;
+                this.status=[];
+            },
             play(){
                 let re=test(this.tasks[this.no][3],this.ans[this.no]);
                 this.status=re;
+            },
+            testRule(){
+                let opt=Object.assign({debug:1},this.tasks[this.no][3].option);
+                let re=d(this.testValue,(this.ans[this.no]||"").split('\n'),opt);
+                this.status=['test',this.testValue,re[0],this.tasks[this.no][3].check(this.testValue),re[2]=="tooSlow"?(re[1].join('\n').slice(0,10000)+"..."):re[1].join('\n')];
             },
             showMeTheAnswer(){
                 return;
                 this.ans[this.no]=this.tasks[this.no][3]['ans'];
             },
+        },
+        mounted() {
+            if(location.hash=="#showMeTheAnswer")this.tasks.forEach((value,index)=>this.ans[index]=value[3].ans);
         }
       }).mount('#app')
     </script>
-    
 </body>
 </html>
-
