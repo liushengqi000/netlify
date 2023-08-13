@@ -423,7 +423,7 @@
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.includes('b')?s.replace(/a/g,'b'):s.replace(/a/g,'c'),
                 vaild:s=>s.replace(/[abc]/g,'').length==0,
-                ans:'',
+                ans:'bS=tSbEt\ncS=Sc\nEb=tSbEt\nEc=cE\nAtS=tSbEt\nctS=tSc\nEtA=tSbEt\nEtc=cEt\nS=\nE=\nt=\na=SAE\nA=c',
                 option:{keywords:0}
             }]
         ];
