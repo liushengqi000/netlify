@@ -23,7 +23,7 @@
                 <a href="./help.pdf">游戏说明</a>
             </div>
             <div style="white-space:pre-wrap;">{{tasks[no][1]}}<p>目标：{{tasks[no][2]}}</div>
-            <div><textarea v-model.lazy="ans[no]" style="width:100%" rows=10 @change="status=[]"></textarea></div>
+            <div><textarea v-model.lazy="ans[no]" style="width:100%;resize: vertical;" rows=10 @change="status=[]"></textarea></div>
             <div>测试输入<input style="margin:0px 20px" v-model="testValue"><button @click="testRule">测试</button></div>
             <div><button style="margin-right:20px" @click="play">运行</button><button @click="showMeTheAnswer">看答案</button></div>
             <div>
