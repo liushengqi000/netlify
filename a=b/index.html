@@ -418,12 +418,12 @@
                 ans:'',
                 option:{keywords:0}
             }],
-            ["6-3 To B or not to B 2","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括b，将每个a替换为b。\n否则，将每个a替换为c。\n限制条件: 1 <= 输入长度 <= 7\n在这一关里，你不能使用关键字。",13,
+            ["6-3 To B or not to B 2","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括b，将每个a替换为b。\n否则，将每个a替换为c。\n限制条件: 1 <= 输入长度 <= 7\n在这一关里，你不能使用关键字。",12,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.includes('b')?s.replace(/a/g,'b'):s.replace(/a/g,'c'),
                 vaild:s=>s.replace(/[abc]/g,'').length==0,
-                ans:'bS=tSbEt\ncS=Sc\nEb=tSbEt\nEc=cE\nAtS=tSbEt\nctS=tSc\nEtA=tSbEt\nEtc=cEt\nS=\nE=\nt=\na=SAE\nA=c',
+                ans:'bSS=bES\ncSS=SSc\nEEb=SEb\nEEc=cEE\nASE=SEb\ncSE=SEc\nESA=b\nESc=cES\nS=\nE=\na=SSAEE\nA=c',
                 option:{keywords:0}
             }]
         ];
