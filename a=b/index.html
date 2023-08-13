@@ -418,7 +418,7 @@
                 test:function*(){let len=7,chr=3;for(let l=2;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.split('').reverse().join('') === s).toString(),
                 vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length>1,
-                ans:'',
+                ans:'aa=XAXXAX\nb=XBX\nc=XCX\naX=XAXX\nXa=XXAX\nXX=X\npAX=AXp\npBX=BXp\npCX=CXp\nXp=T\nTp=true\nTAT=true\nTBT=true\nTCT=true\nT=\nX=Tp\nAtrueA=true\nBtrueB=true\nCtrueC=true\nA=false\nB=false\nC=false\nfalsetrue=false\nfalsefalse=false',
                 option:{keywords:0}
             }],
             ["6-3 To B or not to B 2","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括b，将每个a替换为b。\n否则，将每个a替换为c。\n限制条件: 1 <= 输入长度 <= 7\n在这一关里，你不能使用关键字。",12,
