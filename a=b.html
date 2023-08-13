@@ -425,8 +425,8 @@
                 this.status=['test',this.testValue,re[0],this.tasks[this.no][3].check(this.testValue),re[2]=="tooSlow"?(re[1].join('\n').slice(0,10000)+"..."):re[1].join('\n')];
             },
             showMeTheAnswer(){
-                return;
-                this.ans[this.no]=this.tasks[this.no][3]['ans'];
+                if(this.ans[this.no]=="showMeTheAnswer")this.ans[this.no]=this.tasks[this.no][3]['ans'];
+                else alert("showMeTheMoney");
             },
         },
         mounted() {
