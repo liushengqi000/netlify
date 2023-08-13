@@ -21,13 +21,13 @@
                 </select>
                 <button style="margin-left:20px" @click="next" :disabled="no+1==tasks.length">下一题</button>
             </div>
-            <div>{{tasks[no][1]}}<p>目标：{{tasks[no][2]}}</div>
+            <div style="white-space:pre-wrap;">{{tasks[no][1]}}<p>目标：{{tasks[no][2]}}</div>
             <div><textarea v-model="ans[no]" style="width:100%" rows=10></textarea></div>
             <div>测试输入<input style="margin:0px 20px" v-model="testValue"><button @click="testRule">测试</button></div>
             <div><button style="margin-right:20px" @click="play">运行</button><button @click="showMeTheAnswer">看答案</button></div>
             <div>
-                {{status[0] && (status[0]=="pass"?(ans[no]?.split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.includes('=')).length>tasks[no][2]?"成功":"完美通关"):(status[0]=="test"?"测试":"错误"))}}<p>
-                <template v-if='status[0]?.startsWith("error")||status[0]=="test"'>
+                {{status[0] && (status[0]=="pass"?(ans[no]?.split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.includes('=')).length>tasks[no][2]?"成功":"完美通关"):(status[0]?.startsWith("error")?"错误":status[0]))}}<p>
+                <template v-if='status[0]?.startsWith("error")||status[0]=="测试"'>
                 输入：{{status[1]}}<p>
                 输出：{{status[2].length>100?status[2].slice(0,100)+"...":status[2]}}<p>
                 预期：{{status[3]}}<p>
@@ -36,7 +36,7 @@
         </div>
         <div>
             运行记录：<p>
-            <div style="width:800px;border:solid 1px #ff0000;white-space:pre-wrap;word-break:break-word;height:600px;overflow:auto;" v-show='status[0]?.startsWith("error")||status[0]=="test"'>{{status[4]}}</div>
+            <div style="width:800px;border:solid 1px #ff0000;white-space:pre-wrap;word-break:break-word;height:600px;overflow:auto;" v-show='status[0]?.startsWith("error")||status[0]=="测试"'>{{status[4]}}</div>
         </div>
     </div>
     <script>
@@ -96,270 +96,315 @@
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/a/g,'b'),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'a=b'
             }],
             ["1-2 大写","输入: 一个由a, b和c组成的字符串。\n输出: 将每个字母替换为相应的大写字母。\n限制条件: 1 <= 输入长度 <= 7",3,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.toUpperCase(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'a=A\nb=B\nc=C'
             }],
             ["1-3 去重","输入: 一个由a, b和c组成的字符串。\n输出: 将连续的相同字母替换为单个字母。\n限制条件: 1 <= 输入长度 <= 7",3,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/(a+|b+|c+)/g,c=>c[0]),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'aa=a\nbb=b\ncc=c'
             }],
             ["1-4 去重 2","输入: 一个由a, b和c组成的字符串。\n输出: 删除连续的a。\n限制条件: 1 <= 输入长度 <= 7",2,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/a{2,}/g,''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'aaa=aa\naa='
             }],
             ["1-5 排序","输入: 一个由a, b和c组成的字符串。\n输出: 将输入按照字典序排序。\n限制条件: 1 <= 输入长度 <= 7",3,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.split('').sort().join(''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'ba=ab\ncb=bc\nca=ac'
             }],
             ["1-6 比较","输入: 一个由a和b组成的字符串。\n输出: 出现次数最多的字母。\n限制条件: 1 <= 输入长度 <= 11\na和b的数量不同。",4,
             {
                 test:function*(){let len=11,chr=2;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"ab"[c]).padStart(l,'a');if(t.replace(/a/g,'').length!=t.replace(/b/g,'').length)yield t;};},
                 check:s=>s.replace(/a/g,'').length>s.replace(/b/g,'').length?'b':'a',
+                vaild:s=>s.replace(/[ab]/g,'').length==0 && (s.replace(/[a]/g,'').length != s.replace(/[b]/g,'').length),
                 ans:'ba=\nab=\naa=a\nbb=b'
             }],
             ["2-1 Hello World","输入: 一个由a, b和c组成的字符串。\n输出: helloworld\n限制条件: 1 <= 输入长度 <= 7",1,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>'helloworld',
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'=(return)helloworld'
             }],
             ["2-2 AAA","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括至少三个a，返回true。\n否则，返回false。\n限制条件: 1 <= 输入长度 <= 7",4,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.replace(/[^a]/g,'').length>=3).toString(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'b=\nc=\naaa=(return)true\n=(return)false'
             }],
             ["2-3 恰好三个","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括恰好三个字母，返回true。\n否则，返回false。\n限制条件: 1 <= 输入长度 <= 7",5,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.length==3).toString(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'b=a\nc=a\naaaa=(return)false\naaa=(return)true\n=(return)false'
             }],
             ["2-4 余数","输入: 一个由a, b和c组成的字符串。\n输出: 将输入长度除以3。输出余数。\n限制条件: 1 <= 输入长度 <= 7",6,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.length%3).toString(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'b=a\nc=a\naaa=\naa=(return)2\na=(return)1\n=(return)0'
             }],
             ["2-5 奇数","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入中每个字母出现次数均为奇数，或者为0，返回true。\n否则，返回false。\n限制条件: 1 <= 输入长度 <= 7",10,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>{let a=s.replace(/[^a]/g,'').length;let b=s.replace(/[^b]/g,'').length;let c=s.replace(/[^c]/g,'').length;return ((a%2==1 || a==0) && (b%2==1 || b==0) && (c%2==1 || c==0)).toString()},
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'ba=ab\ncb=bc\nca=ac\naaa=a\nbbb=b\nccc=c\naa=(return)false\nbb=(return)false\ncc=(return)false\n=(return)true'
             }],
             ["2-6 独一无二","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入中恰好有一个字母与其相邻字母不同，返回true。\n否则，返回false。\n例如在\"babbcc\"中，第一个a和第一个b与相邻字母不同，因此返回false。\n限制条件: 1 <= 输入长度 <= 7",13,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.replace(/(a{2,}|b{2,}|c{2,})/g,'').length==1).toString(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'aaa=aa\nbbb=bb\nccc=cc\naa=x\nbb=x\ncc=x\na=e\nb=e\nc=e\nx=\nee=(return)false\ne=(return)true\n=(return)false'
             }],
             ["2-7 上升","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入中c比b多，并且b比a多，返回true。\n否则，返回false。\n限制条件: 1 <= 输入长度 <= 7",8,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>{let a=s.replace(/[^a]/g,'').length;let b=s.replace(/[^b]/g,'').length;let c=s.replace(/[^c]/g,'').length;return (c>b && b>a).toString()},
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'ba=ab\ncb=bc\nca=ac\nbc=y\nby=yb\nay=\nyc=(return)true\n=(return)false'
             }],
             ["2-8 最多","输入: 一个由a, b和c组成的字符串。\n输出: 返回出现次数最多的字母。\n限制条件: 1 <= 输入长度 <= 7\n保证只有一个字母为最多。",11,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');let a=t.replace(/[^a]/g,'').length;let b=t.replace(/[^b]/g,'').length;let c=t.replace(/[^c]/g,'').length;let m=Math.max(a,b,c);if([a,b,c].filter(n=>n==m).length==1)yield t;};},
                 check:s=>{let a=s.replace(/[^a]/g,'').length;let b=s.replace(/[^b]/g,'').length;let c=s.replace(/[^c]/g,'').length;let m=Math.max(a,b,c);return m==a?'a':(m==b?'b':'c')},
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && (a=s.replace(/[^a]/g,'').length,b=s.replace(/[^b]/g,'').length,c=s.replace(/[^c]/g,'').length,m=Math.max(a,b,c),[a,b,c].filter(n=>n==m).length==1),
                 ans:'ba=ab\ncb=bc\nca=ac\nbc=y\nby=yb\nay=\nab=\nac=\na=(return)a\nb=(return)b\nc=(return)c'
             }],
             ["2-9 最少","输入: 一个由a, b和c组成的字符串。\n输出: 返回出现次数最少的字母。\n限制条件: 2 <= 输入长度 <= 7\n保证只有一个字母为最少。",9,
             {
                 test:function*(){let len=7,chr=3;for(let l=2;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');let a=t.replace(/[^a]/g,'').length;let b=t.replace(/[^b]/g,'').length;let c=t.replace(/[^c]/g,'').length;let m=Math.min(a,b,c);if([a,b,c].filter(n=>n==m).length==1)yield t;};},
                 check:s=>{let a=s.replace(/[^a]/g,'').length;let b=s.replace(/[^b]/g,'').length;let c=s.replace(/[^c]/g,'').length;let m=Math.min(a,b,c);return m==a?'a':(m==b?'b':'c')},
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && (a=s.replace(/[^a]/g,'').length,b=s.replace(/[^b]/g,'').length,c=s.replace(/[^c]/g,'').length,m=Math.min(a,b,c),[a,b,c].filter(n=>n==m).length==1),
                 ans:'ba=ab\ncb=bc\nca=ac\nbc=y\nby=yb\nay=\nab=(return)c\nac=(return)b\n=(return)a'
             }],
             ["3-1 去除","输入: 一个由a, b和c组成的字符串。\n输出: 移除输入字符串头部和尾部的所有a。\n限制条件: 1 <= 输入长度 <= 7",2,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/(^a+|a+$)/g,''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(start)a=\n(end)a='
             }],
             ["3-2 旋转","输入: 一个由a, b和c组成的字符串。\n输出: 将第一个a字母之前的每个字符移动到序列末尾。\n限制条件: 1 <= 输入长度 <= 7\n输入至少包括一个a。",2,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');if(t.includes('a'))yield t;};},
                 check:s=>s.replace(/^(.*?)(a.*)$/,(a,b,c)=>c+b),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.includes('a'),
                 ans:'(start)b=(end)b\n(start)c=(end)c'
             }],
             ["3-3 A到B 2","输入: 一个由a, b和c组成的字符串。\n输出: 将输入头部和尾部的每个a替换为b。\n限制条件: 1 <= 输入长度 <= 7",4,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/(^a+|a+$)/g,a=>a.replace(/a/g,'b')),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(start)a=(end)x\n(end)x=(start)b\n(end)a=(start)x\n(start)x=(end)b'
             }],
             ["3-4 交换","输入: 一个由a, b和c组成的字符串。\n输出: 交换输入头部的每个a和输入尾部的每个b。\n限制条件: 2 <= 输入长度 <= 8\n输入总是以a开始，以b结束。",4,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');if(t.replace(/a/g,'').length!=0 && t.replace(/b/g,'').length!=0)yield t;};},
                 check:s=>s.replace(/^(a*)(.*?)(b*)$/,(a,b,c,d)=>d+c+b),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.replace(/a/g,'').length!=0 && s.replace(/b/g,'').length!=0,
                 ans:'(end)b=(start)xb\nxba=axb\n(start)a=(end)ax\nx='
             }],
             ["3-5 首尾","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入的首个字母和最后一个字母相同，返回true。\n否则，返回false。\n限制条件: 2 <= 输入长度 <= 7",7,
             {
                 test:function*(){let len=7,chr=3;for(let l=2;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s[0]==s[s.length-1]).toString(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length>1,
                 ans:'ax=(return)true\nby=(return)true\ncz=(return)true\n(start)a=(end)x\n(start)b=(end)y\n(start)c=(end)z\n=(return)false'
             }],
             ["3-6 最多 2","输入: 一个由a, b和c组成的字符串。\n输出: 保留出现次数最多的字母并删除其余字母。\n限制条件: 1 <= 输入长度 <= 7\n保证只有一个字母为最多。",11,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');let a=t.replace(/[^a]/g,'').length;let b=t.replace(/[^b]/g,'').length;let c=t.replace(/[^c]/g,'').length;let m=Math.max(a,b,c);if([a,b,c].filter(n=>n==m).length==1)yield t;};},
                 check:s=>{let a=s.replace(/[^a]/g,'').length;let b=s.replace(/[^b]/g,'').length;let c=s.replace(/[^c]/g,'').length;let m=Math.max(a,b,c);return (a==m?'a':b==m?'b':'c').repeat(m);},
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && (a=s.replace(/[^a]/g,'').length,b=s.replace(/[^b]/g,'').length,c=s.replace(/[^c]/g,'').length,m=Math.max(a,b,c),[a,b,c].filter(n=>n==m).length==1),
                 ans:'ba=ab\nca=ac\ncb=bc\nbc=y\nby=yb\nay=(start)y\nab=(start)y\nac=(start)y\nya=aa\nyb=bb\nyc=cc'
             }],
             ["3-7 回文串","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入是回文串（正向和反向读起来相同），返回true。\n否则，返回false。\n限制条件: 1 <= 输入长度 <= 7",8,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.split('').reverse().join('') === s).toString(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(end)axax=\n(end)bxbx=\n(end)cxcx=\n(start)a=(end)xax\n(start)b=(end)xbx\n(start)c=(end)xcx\nxx=(return)false\n=(return)true'
             }],
             ["4-1 Hello 2","输入: 一个由a, b和c组成的字符串。\n输出: 在字符串头部添加hello。\n限制条件: 1 <= 输入长度 <= 7",1,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>"hello"+s,
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)=hello'
             }],
             ["4-2 移除 2","输入: 一个由a, b和c组成的字符串。\n输出: 移除前三个a。\n（如果少于三个a，全部移除）\n限制条件: 1 <= 输入长度 <= 7",3,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace('a','').replace('a','').replace('a',''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)a=\n(once)a=\n(once)a='
             }],
             ["4-3 切割","输入: 一个由a, b和c组成的字符串。\n输出: 移除前三个字母。\n限制条件: 3 <= 输入长度 <= 7",4,
             {
                 test:function*(){let len=7,chr=3;for(let l=3;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.slice(3),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length>2,
                 ans:'(once)=xxx\nxa=\nxb=\nxc='
             }],
             ["4-4 移除 3","输入: 一个由a, b和c组成的字符串。\n输出: 移除字符串最后三个a。\n（如果不足三个，全部移除）\n限制条件: 1 <= 输入长度 <= 7",5,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/a(?=[^a]*$)/,'').replace(/a(?=[^a]*$)/,'').replace(/a(?=[^a]*$)/,''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)=(end)xxx\nax=\nbx=xb\ncx=xc\nx='
             }],
             ["4-5 反转","输入: 一个由a, b和c组成的字符串。\n输出: 交换第一个字母和最后一个字母。\n限制条件: 2 <= 输入长度 <= 7",7,
             {
                 test:function*(){let len=7,chr=3;for(let l=2;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/^(.)(.*)(.)$/,(a,b,c,d)=>d+c+b),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length>1,
                 ans:'(once)=(start)x\nxa=(end)ya\nxb=(end)yb\nxc=(end)yc\nay=(start)a\nby=(start)b\ncy=(start)c'
             }],
             ["4-6 反转 2","输入: 一个由a, b和c组成的字符串。\n输出: 反转输入。\n限制条件: 1 <= Input length <= 7",6,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.split('').reverse().join(''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)=(end)Y\n(start)Y=\nax=(end)a\nbx=(end)b\ncx=(end)c\nY=xY'
             }],
             ["4-7 切割 2","输入: 一个由a, b和c组成的字符串。\n输出: 移除第三个字母。\n限制条件: 3 <= 输入长度 <= 7",7,
             {
                 test:function*(){let len=7,chr=3;for(let l=3;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/(?<=.{2})./,''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length>2,
                 ans:'(once)=(start)DHH\nHa=(start)a\nHb=(start)b\nHc=(start)c\nDa=(start)HH\nDb=(start)HH\nDc=(start)HH'
             }],
             ["4-8 复制","输入: 一个由a, b和c组成的字符串。\n输出: 复制字符串的前三个字母，然后将其添加到字符串的末尾。\n限制条件: 3 <= 输入长度 <= 7",11,
             {
                 test:function*(){let len=7,chr=3;for(let l=3;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/^(.{3})(.*)$/,(a,b,c)=>b+c+b),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length>2,
                 ans:'(once)=(start)xxx\npa=(end)a\npb=(end)b\npc=(end)c\nxya=yax\nxyb=ybx\nxyc=ycx\nxa=yapa\nxb=ybpb\nxc=ycpc\ny='
             }],
             ["4-9 A到B 3","输入: 一个由a, b和c组成的字符串。\n输出: 将每个a替换为b，将每个b替换为a。\n限制条件: 1 <= 输入长度 <= 7",5,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/[ab]/g,c=>c=='a'?'b':'a'),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)=x\nxa=bx\nxc=cx\nxb=ax\nx='
             }],
             ["4-10 半数","输入: 一个由a, b和c组成的字符串。\n输出: 删除每个位于奇数位的字母。（第1,3,5,7个字母）\n限制条件: 1 <= 输入长度 <= 7",8,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.replace(/(.)(.)?/g,(a,b,c)=>c||''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)=xx\nxxa=x\nxxb=x\nxxc=x\nxa=axx\nxb=bxx\nxc=cxx\nx='
             }],
             ["4-11 复制 2","输入: 一个由a, b和c组成的字符串。\n输出: 重复一遍输入串。\n限制条件: 1 <= 输入长度 <= 7",9,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s+s,
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)=(start)x\n(once)=(end)y\nqa=(end)a\nqb=(end)b\nqc=(end)c\nxa=axqa\nxb=bxqb\nxc=cxqc\nxy='
             }],
             ["4-12 To B or not to B","输入: 一个由a, b和c组成的字符串。\n输出: 如果输入包括b，将每个a替换为b。\n否则，将每个a替换为c。\n限制条件: 1 <= Input length <= 7",7,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.includes('b')?s.replace(/a/g,'b'):s.replace(/a/g,'c'),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)b=bX\nX=(start)Y\nYa=bY\nYb=bY\nYc=cY\n(end)Y=\na=c'//'(once)=(start)X\nXXa=bXX\nXXc=cXX\nXXb=bXX\nXa=aX\nXc=cX\n(end)X=\nX=(start)XX\na=c'
             }],
             ["4-13 中心","输入: 一个由a, b和c组成的字符串。\n输出: 输出最中间的字母。\n限制条件: 1 <= 输入长度 <= 7\n保证字符串长度为奇数。",10,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');if(t.length%2==1)yield t;};},
                 check:s=>s.split('').map((v,k)=>k!=(s.length-1)/2?"":v).join(''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length%2==1,
                 ans:'(once)=(end)E\n(start)aE=(return)a\n(start)bE=(return)b\n(start)cE=(return)c\nxa=(end)E\nxb=(end)E\nxc=(end)E\naE=(start)x\nbE=(start)x\ncE=(start)x'
             }],
             ["4-14 中心 2","输入: 一个由a, b和c组成的字符串。\n输出: 删除最中间的字母。\n限制条件: 1 <= 输入长度 <= 7\n保证字符串长度为奇数。",15,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');if(t.length%2==1)yield t;};},
                 check:s=>s.split('').map((v,k)=>k==(s.length-1)/2?"":v).join(''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && s.length%2==1,
                 ans:'(once)=(start)dS\n(once)=(end)E\n(end)d=(start)d\ndSaE=\ndSbE=\ndScE=\ndSa=aSd\ndSb=bSd\ndSc=cSd\ndaE=Ead\ndbE=Ebd\ndcE=Ecd\nda=ad\ndb=bd\ndc=cd'
             }],
             ["4-15 扩张","输入: 一个由a, b和c组成的字符串。\n输出: 重复第x个字母x次。\n限制条件: 1 <= 输入长度 <= 6",11,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.split('').map((v,k)=>v.repeat(k+1)).join(''),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'(once)=(start)X\nXa=aYX\nXb=bYX\nXc=cYX\nXY=yX\nXy=yX\n(end)X=\nY=X\nay=aa\nby=bb\ncy=cc'
             }],
             ["4-16 合并","输入: 两个由a和b组成的字符串，以\",\"隔开。\n输出: 合并两个字符串。\r\n来自两个字符串的字母在输出串当中交替出现。\n限制条件: 1 <= 输入长度 <= 5\n两个输入串长度相同。",7,
             {
                 test:function*(){let len=5,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++)for(let j=0;j<Math.pow(chr,l);j++){yield i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a')+','+j.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');};},
                 check:s=>(o=s.split(',').map(s=>s.split('')),o[0].map((v,k)=>v+o[1][k]).join('')),
+                vaild:s=>s.replace(/[abc]/g,'').length==0 && (o=s.split(','),o.length==2 && o[0].length==o[1].length),
                 ans:'(once)=(start)p\np,=\npa=(end)a\npb=(end)b\npc=(end)c\nx=(start)p\n,=,xp'
             }],
             ["5-1 计数","输入: 一个二进制数。\r\n输出: 该数量的a。\r\n限制条件: 1 <= 输入数值 <= 63",7,
             {
                 test:function*(){for(let a=0;a<100;a++){let t=a.toString(2);yield t;};},
                 check:s=>"a".repeat(parseInt(s,2)),
+                vaild:s=>s.replace(/[01]/g,'').length==0,
                 ans:'(once)=(end)E\n(start)E=\n(start)0=\n1p=0d\n0p=p1\nd=(end)a\nE=pE'
             }],
             ["5-2 A+1","输入: 一个二进制数。\n输出: 输入加1。\n限制条件: 1 <= 输入数值 <= 1023",4,
             {
                 test:function*(){for(let a=0;a<1024;a++)yield a.toString(2);},
                 check:s=>(parseInt(s,2)+1).toString(2),
+                vaild:s=>s.replace(/[01]/g,'').length==0,
                 ans:'(once)=(end)E\n0E=1\n1E=E0\n(start)E=1'
             }],
             ["5-3 A+B","输入: 两个二进制数，用+隔开。\n输出: 二者之和。\n限制条件: 1 <= 输入数值 <= 31",9,
             {
                 test:function*(){for(let a=0;a<50;a++)for(let b=0;b<50;b++)if(a+b>0)yield a.toString(2)+'+'+b.toString(2);},
                 check:s=>s.split('+').map(o=>parseInt(o,2)).reduce((a,b)=>a+b).toString(2),
+                vaild:s=>s.replace(/[01]/g,'').length==1 && (o=s.split('+'),o.length==2 && (parseInt(o[0],2)+parseInt(o[1],2)>0)),
                 ans:'0a=1\n1a=a0\n+a=+1\n(start)+=\n(start)0=\n1s=0d\n0s=s1\nd=(end)a\n+=s+'
             }],
             ["5-4 A-B","输入: 两个二进制数，用-隔开。\n输出: 二者之差。\n限制条件: 1 <= 输入数值 <= 31\n第一个数 > 第二个数",7,
             {
                 test:function*(){for(let a=0;a<50;a++)for(let b=0;b<a;b++)yield a.toString(2)+'-'+b.toString(2);},
                 check:s=>s.split('-').map(o=>parseInt(o,2)).reduce((a,b)=>a-b).toString(2),
+                vaild:s=>s.replace(/[01]/g,'').length==1 && (o=s.split('-'),o.length==2 && (parseInt(o[0],2)-parseInt(o[1],2)>0)),
                 ans:'-0=-\n(start)0=\nd=(end)s\ns-s=\n1s=0\n0s=s1\n-=s-d'
             }],
             ["5-5 A*B","输入: 两个二进制数，用*隔开。\n输出: 二者之积。\n限制条件: 1 <= 输入数值 <= 31",28,
             {
-                test:function*(){for(let a=0;a<50;a++)for(let b=0;b<50;b++)yield a.toString(2)+'*'+b.toString(2);},
+                test:function*(){for(let a=1;a<50;a++)for(let b=1;b<50;b++)yield a.toString(2)+'*'+b.toString(2);},
                 check:s=>s.split('*').map(o=>parseInt(o,2)).reduce((a,b)=>a*b).toString(2),
+                vaild:s=>s.replace(/[01]/g,'').length==1 && (o=s.split('*'),o.length==2 && (parseInt(o[0],2)*parseInt(o[1],2)>0)),
                 ans:''
             }],
             ["5-6 A/B","输入: 两个二进制数，用/隔开。\n输出: 二者之商和余数，以一个\",\"隔开。\n限制条件: 1 <= 输入数值 <= 31",40,
             {
-                test:function*(){for(let a=0;a<50;a++)for(let b=0;b<50;b++)yield a.toString(2)+'/'+b.toString(2);},
+                test:function*(){for(let a=1;a<50;a++)for(let b=1;b<50;b++)yield a.toString(2)+'/'+b.toString(2);},
                 check:s=>(s=s.split('/').map(o=>parseInt(o,2)),Math.floor((s[0]/s[1])).toString(2)+','+(s[0]%s[1]).toString(2)),
+                vaild:s=>s.replace(/[01]/g,'').length==1 && (o=s.split('/'),o.length==2 && parseInt(o[0],2)>0 && parseInt(o[1],2)>0),
                 ans:''
             }],
             ["6-1 再次问候","输入: 一个由a, b和c组成的字符串。\n输出: helloworld\n限制条件: 1 <= 输入长度 <= 7\n在这一关里，你不能使用关键字。",4,
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>'helloworld',
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'a=helloworld\nb=helloworld\nc=helloworld\nhelloworldhelloworld=helloworld',
                 option:{keywords:0}
             }],
@@ -367,6 +412,7 @@
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>(s.split('').reverse().join('') === s).toString(),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'',
                 option:{keywords:0}
             }],
@@ -374,6 +420,7 @@
             {
                 test:function*(){let len=7,chr=3;for(let l=1;l<len;l++)for(let i=0;i<Math.pow(chr,l);i++){let t=i.toString(chr).replace(/./g,c=>"abc"[c]).padStart(l,'a');yield t;};},
                 check:s=>s.includes('b')?s.replace(/a/g,'b'):s.replace(/a/g,'c'),
+                vaild:s=>s.replace(/[abc]/g,'').length==0,
                 ans:'',
                 option:{keywords:0}
             }]
@@ -420,9 +467,13 @@
                 this.status=re;
             },
             testRule(){
-                let opt=Object.assign({debug:1},this.tasks[this.no][3].option);
-                let re=d(this.testValue,(this.ans[this.no]||"").split('\n'),opt);
-                this.status=['test',this.testValue,re[0],this.tasks[this.no][3].check(this.testValue),re[2]=="tooSlow"?(re[1].join('\n').slice(0,10000)+"..."):re[1].join('\n')];
+                if(this.tasks[this.no][3].vaild(this.testValue)){
+                    let opt=Object.assign({debug:1},this.tasks[this.no][3].option);
+                    let re=d(this.testValue,(this.ans[this.no]||"").split('\n'),opt);
+                    this.status=['测试',this.testValue,re[0],this.tasks[this.no][3].check(this.testValue),re[2]=="tooSlow"?(re[1].join('\n').slice(0,10000)+"..."):re[1].join('\n')];
+                }else{
+                    this.status=['测试数据错误']
+                }
             },
             showMeTheAnswer(){
                 if(this.ans[this.no]=="showMeTheAnswer")this.ans[this.no]=this.tasks[this.no][3]['ans'];
