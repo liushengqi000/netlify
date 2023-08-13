@@ -464,6 +464,7 @@
             },
             play(){
                 let re=test(this.tasks[this.no][3],this.ans[this.no]);
+                if(re[0]!="pass")this.testValue=re[1];
                 this.status=re;
             },
             testRule(){
