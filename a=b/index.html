@@ -27,7 +27,7 @@
             <div>测试输入<input style="margin:0px 20px" v-model="testValue"><button @click="testRule">测试</button></div>
             <div><button style="margin-right:20px" @click="play">运行</button><button @click="showMeTheAnswer">看答案</button></div>
             <div>
-                {{status[0] && (status[0]=="通关"?(ans[no]?.split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.includes('=')).length>tasks[no][2]?"成功":"完美通关"):status[0])}}<p>
+                {{status[0] && (status[0]=="通关"?(anslen>tasks[no][2]?("成功,"+anslen+"行"):"完美通关"):status[0])}}<p>
                 <template v-if='status[0]?.startsWith("错误")||status[0]=="测试"'>
                 输入：{{status[1]}}<p>
                 输出：{{status[2].length>100?status[2].slice(0,100)+"...":status[2]}}<p>
@@ -439,6 +439,11 @@
             status:[],
             testValue:""
           }
+        },
+        computed: {
+            anslen() {
+                return (this.ans[this.no]||"").split("\n").map(r=>r.replace(/#.*$/,'')).filter(r=>r.includes('=')).length;
+            }
         },
         methods:{
             next(){
