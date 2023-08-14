@@ -440,7 +440,8 @@
             no:0,
             ans:{},
             status:[],
-            testValue:""
+            testValue:"",
+            showAns:false
           }
         },
         computed: {
@@ -482,12 +483,16 @@
                 }
             },
             showMeTheAnswer(){
-                if(this.testValue.toLowerCase()=="brain")this.ans[this.no]=this.tasks[this.no][3]['ans'];
+                if(this.testValue.toLowerCase()=="brain")this.showAns=true;
+                if(this.showAns)this.ans[this.no]=this.tasks[this.no][3]['ans'];
                 else alert("giveMeTheBrain");
             },
         },
         mounted() {
-            if(location.hash.toLowerCase()=="#showmetheanswer")this.tasks.forEach((value,index)=>this.ans[index]=value[3].ans);
+            if(location.hash.toLowerCase()=="#showmetheanswer"){
+                this.tasks.forEach((value,index)=>this.ans[index]=value[3].ans);
+                this.showAns=true;
+            }
         }
       }).mount('#app')
     </script>
