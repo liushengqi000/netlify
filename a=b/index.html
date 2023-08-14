@@ -396,7 +396,7 @@
                 test:function*(){for(let a=1;a<50;a++)for(let b=1;b<50;b++)yield a.toString(2)+'*'+b.toString(2);},
                 check:s=>s.split('*').map(o=>parseInt(o,2)).reduce((a,b)=>a*b).toString(2),
                 vaild:s=>s.replace(/[01]/g,'').length==1 && (o=s.split('*'),o.length==2 && (parseInt(o[0],2)*parseInt(o[1],2)>0)),
-                ans:'(start)0=\n(start)$=\n(start)+=\np=(end)0\nq=(end)1\n0*=p*\n1*=0$\n(once)=(end)+\nc0=0pc\nc1=1qc\n(start)1a=(end)+\n0a=a0p\n1a=a1p\n$=a$c\nc=(end)Z\n1S=(end)PP\n0S=(end)P\n0P=P0\n1P=P1\n+Z=+0Z\n0ZPP=Z1\n1ZPP=AZ0\n0ZP=Z0\n1ZP=Z1\n1A=A0\n0A=1\nA=1\n(start)E=\nE=SE\nZ=\n+=SEc+'
+                ans:'(start)0=\n(start)$=\np=(end)0\nq=(end)1\n0*=p*\n1*=0$\n(once)=(end)+\nc0=0pc\nc1=1qc\n(start)1a=(end)+\n0a=a0p\n1a=a1p\n$=a$c\nc=(end)Z\n1S=(end)PP\n0S=(end)P\n0P=P0\n1P=P1\n+Z=+0Z\n0ZPP=Z1\n1ZPP=AZ0\n0ZP=Z0\n1ZP=Z1\n1A=A0\n0A=1\nA=1\n(start)+=\n++=S++\nZ=\n+=c+++'
             }],
             ["5-6 A/B","输入: 两个二进制数，用/隔开。\n输出: 二者之商和余数，以一个\",\"隔开。\n限制条件: 1 <= 输入数值 <= 31",40,
             {
