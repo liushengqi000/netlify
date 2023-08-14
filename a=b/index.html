@@ -483,8 +483,7 @@
                 }
             },
             showMeTheAnswer(){
-                if(this.testValue.toLowerCase()=="brain")this.showAns=true;
-                if(this.showAns)this.ans[this.no]=this.tasks[this.no][3]['ans'];
+                if(this.testValue.toLowerCase()=="brain" || this.showAns)this.ans[this.no]=this.tasks[this.no][3]['ans'];
                 else alert("giveMeTheBrain");
             },
         },
