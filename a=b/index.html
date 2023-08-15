@@ -2,9 +2,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
-        html,body{ height: 100%; width:100%; margin: 0px;font-family: monospace;font-size: 16px;} 
+        html,body{ height: 100%; width:100%; margin: 0px;font-family: monospace;font-size: 16px;background:#000000;color:#ffffff;} 
         button,input,textarea{font-family: monospace;font-size: 16px;} 
         div{padding:10px;}
     </style>
@@ -15,7 +16,7 @@
             <div>
                 
                 <button style="margin:0px 20px" @click="no-=1" :disabled="no<1">上一题</button>
-                <select v-model="this.no" style="font-size:17px;width:250px;">
+                <select v-model="this.no" style="font-size:17px;">
                     <option v-for="(value,index) in this.tasks" :value="index">
                         {{value[0]}}
                     </option>
@@ -38,7 +39,7 @@
         </div>
         <div>
             运行记录：<p>
-            <div style="width:800px;border:solid 1px #ff0000;white-space:pre-wrap;word-break:break-word;height:800px;overflow:auto;">
+            <div style="width:800px;border:solid 1px #999999;white-space:pre-wrap;word-break:break-word;height:800px;overflow:auto;">
                 {{(status[0] && status[0].startsWith("错误") || status[0]=="测试") ? status[4] : ""}}
             </div>
         </div>
