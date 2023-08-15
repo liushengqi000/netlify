@@ -22,7 +22,7 @@
                     </option>
                 </select>
                 <button style="margin:0px 20px" @click="no+=1" :disabled="no+1==tasks.length">下一题</button>
-                <a href="./help.pdf">游戏说明</a>
+                <a href="./help.pdf" style="color:#ffffff">游戏说明</a>
             </div>
             <div style="white-space:pre-wrap;">{{tasks[no][1]}}<p>目标：{{tasks[no][2]}}</div>
             <div><textarea v-model.lazy="ans[no]" style="width:100%;resize: vertical;height:420px;" @change="status=[]"></textarea></div>
