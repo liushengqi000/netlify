@@ -404,7 +404,7 @@
                 test:function*(){for(let a=1;a<50;a++)for(let b=1;b<50;b++)yield a.toString(2)+'/'+b.toString(2);},
                 check:s=>(s=s.split('/').map(o=>parseInt(o,2)),Math.floor((s[0]/s[1])).toString(2)+','+(s[0]%s[1]).toString(2)),
                 vaild:s=>s.replace(/[01]/g,'').length==1 && (o=s.split('/'),o.length==2 && parseInt(o[0],2)>0 && parseInt(o[1],2)>0),
-                ans:'(once)/=/ac\n(once)=(start)0.\n.0=.\n/0=/\n0f=1\n1f=f0\nf=1\n;=(end)/\na=(end)@\np=(end)0\nq=(end)1\n!1=!\n!0=!\n!c@=(end)!\nc@=S@\nc0=0pc\nc1=1qc\n1S=s0\n0S=S1\n1s=s1\n0s=s0\n/s=S/\n.ss=f.\ns=\n./@=f,0/!\n./=.;!c\n/@=ss/ac\n@=S@\n/!=\n!=S!\n.=,'
+                ans:'(once)/=/ac\n(once)=(start)0.\n.0=.\n/0=/\n0f=1\n1f=f0\nf=1\n;=(end)/\na=(end)@\np=(end)0\nq=(end)1\n@@1=@@\n@@0=@@\n@@c@=(end)@@\nc@=S@\nc0=0pc\nc1=1qc\n1S=s0\n0S=S1\n1s=s1\n0s=s0\n/s=S/\n.ss=f.\ns=\n./@=f,0/@@\n./=.;@@c\n/@@=\n/@=ss/ac\n@=S@\n.=,'
             }],
             ["6-1 再次问候","输入: 一个由a, b和c组成的字符串。\n输出: helloworld\n限制条件: 1 <= 输入长度 <= 7\n在这一关里，你不能使用关键字。",4,
             {
